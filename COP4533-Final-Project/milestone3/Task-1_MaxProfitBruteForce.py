@@ -1,15 +1,18 @@
+
+
 def MaxProfitBruteForce(A, m, n):
     """
     Brute force algorithm to find the maximum profit from a single buy/sell transaction.
 
     Parameters:
-    A (List[List[int]]): Matrix representing stock prices (m stocks x n days)
-    m (int): Number of stocks (rows)
-    n (int): Number of days (columns)
+        A (List[List[int]]): Matrix representing stock prices (m stocks * n days)
+        m (int): Number of stocks (rows)
+        n (int): Number of days (columns)
 
     Returns:
-    Tuple[int, int, int, int]: (bestStock, bestBuyDay, bestSellDay, maxProfit)
-        All values are 1-based indices. Returns (0, 0, 0, 0) if no profit is possible.
+        Tuple[int, int, int, int]: (bestStock, bestBuyDay, bestSellDay, maxProfit)
+        All values are 1-based indices.
+        Returns (0, 0, 0, 0) if no profit is possible.
     """
 
     # --- initialize variables to store the best result found ---
