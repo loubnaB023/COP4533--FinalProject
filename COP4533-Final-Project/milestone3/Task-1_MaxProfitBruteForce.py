@@ -44,3 +44,18 @@ def MaxProfitBruteForce(A, m, n):
 
 
 
+# --- TEST CASE SECTION ---
+if __name__ == "__main__":
+    
+    # test matrix from the project description
+    A = [
+        [7, 1, 5, 3, 6],
+        [2, 4, 3, 7, 9],
+        [5, 8, 9, 1, 2],
+        [9, 3, 14, 8, 7]
+    ]
+    m = len(A)
+    n = len(A[0])
+
+    result = MaxProfitBruteForce(A, m, n)
+    print("BEST TRANSACTION:", result)  # Expected output: (4, 2, 3, 11)
