@@ -2,7 +2,7 @@
 
 def MaxProfitBruteForce(A, m, n):
     """
-    Brute force algorithm to find the maximum profit from a single buy/sell transaction.
+    Brute force algorithm to find the maximum profit from a single buy/sell trans.
 
     Parameters:
         A (List[List[int]]): Matrix representing stock prices (m stocks * n days)
