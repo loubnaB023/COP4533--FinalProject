@@ -14,6 +14,15 @@ def MaxProfitGreedySolution(A, m, n):
         Returns (0, 0, 0, 0) if no profit is possible.
     """
 
+
+    # --- edge case: check if the input is empty or missing ---
+    if m <= 0 or n <= 1 or not A or n < 2:    
+        return (0, 0, 0, 0)
+    
+    # --- edge case: check if matrix has proper dimensions
+    if len(A) != m or any(len(row) != n for row in A):
+        return (0, 0, 0, 0)
+
     # --- initialize variables to store the best result ---
     maxProfit = 0
     bestStock = 0
@@ -53,17 +62,72 @@ def MaxProfitGreedySolution(A, m, n):
 
 # --- TEST CASE SECTION ---
 if __name__ == "__main__":
-    
-    # test matrix from the project description
+
+    print("=" * 70)
+    print("{:^70}".format("GREEDY ALGORITHM PROBLEM 1 - TASK 2 TESTS"))
+    print("=" * 70)
+
+    print("\n Sample test from Project PDF description")
     A = [
         [7, 1, 5, 3, 6],
         [2, 4, 3, 7, 9],
         [5, 8, 9, 1, 2],
         [9, 3, 14, 8, 7]
     ]
-    m = len(A)
-    n = len(A[0])
+    result = MaxProfitGreedySolution(A, 4, 5)
+    print(f"Expected: (4, 2, 3, 11) | Result: {result}")
+    
+    print("\n 1: Mixed stocks with profits (VALID)")
+    matrix1 = [
+        [7, 1, 5, 3, 6, 4],
+        [2, 8, 3, 9, 1, 5],
+        [10, 2, 6, 4, 8, 3]
+    ]
+    result = MaxProfitGreedySolution(matrix1, 3, 6)
+    print(f"Expected: (2, 1, 4, 7) | Result: {result}")
+    
+    print("\n 2: No profit possible")
+    matrix2 = [
+        [10, 8, 6, 4, 2],
+        [15, 12, 10, 5, 1]
+    ]
+    result = MaxProfitGreedySolution(matrix2, 2, 5)
+    print(f"Expected: (0, 0, 0, 0)| Result: {result}")
 
-    result = MaxProfitGreedySolution(A, m, n)
-    print("BEST TRANSACTION USING THE GREEDY SOLUTION:", result)
-    # Expected Output: (4, 2, 3, 11)
+    print("\n 3: Minimum valid input (1 stock, 2 days)")
+    matrix3 = [
+        [1, 5]
+    ]
+    result = MaxProfitGreedySolution(matrix3, 1, 2)
+    print(f"Expected: (1, 1, 2, 4) | Result: {result}")
+    
+    print("\n" + "=" * 70)
+    print("{:^70}".format("EDGE CASES"))
+    print("=" * 70)
+
+    print("\n 1: Empty matrix")
+    result = MaxProfitGreedySolution([], 0, 0)
+    print(f"Expected: (0, 0, 0, 0) | Result: {result}")
+
+    print("\n 2: One stock One day (no transaction possible)")
+    result = MaxProfitGreedySolution([[5]], 1, 1)
+    print(f"Expected: (0, 0, 0, 0) | Result: {result}")
+
+    print("\n 3: Invalid Matrix dimensions")
+    matrix_invalid = [
+        [1, 2, 3],
+        [4, 5]
+    ]
+    result = MaxProfitGreedySolution(matrix_invalid, 2, 3)
+    print(f"Expected: (0, 0, 0, 0) | Result: {result}")
+
+    print("\n 4: Same price for all stocks")
+    matrix_flat = [
+        [3, 3, 3, 3],
+        [3, 3, 3, 3]
+    ]
+    result = MaxProfitGreedySolution(matrix_flat, 2, 4)
+    print(f"Expected: (0, 0, 0, 0) | Result: {result}")
+    
+
+   
