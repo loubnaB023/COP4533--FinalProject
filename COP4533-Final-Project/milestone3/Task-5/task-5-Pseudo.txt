@@ -1,0 +1,92 @@
+#--- Peseudocode for MultiTransactionStockTrading (Problem-2) Algorithm ---
+'''
+ALGORITHM: MultiTransactionStockTrading (A, m, n, k)
+
+Input:
+    A[m × n]: matrix of stock prices (m stocks, n days)
+    m: number of stocks
+    n: number of days  
+    k: maximum number of transactions allowed
+
+Output:
+    list of transactions (stock, buyDay, sellDay) that maximize profit with at most k transactions
+
+Begin
+    allTransactions ← empty list
+    
+    // Phase 1: Find optimal transactions for each stock using DP
+    For stockId ← 0 to m-1 do
+        prices ← A[stockId]
+        
+        // Initialize DP tables
+        maxProfit[k+1][n] ← all zeros
+        bestDays[k+1][n] ← all null
+        
+        // Fill DP table for increasing number of transactions
+        For t ← 1 to k do
+            maxDiff ← -prices[0]           // Best (profit[t-1][d] - prices[d])
+            bestBuyDay ← 1                 // Best buy day (1-based)
+            
+            For day ← 1 to n-1 do
+                currentProfit ← prices[day] + maxDiff
+                
+                // Option 1: Don't make new transaction today
+                If maxProfit[t][day-1] ≥ currentProfit then
+                    maxProfit[t][day] ← maxProfit[t][day-1]
+                    bestDays[t][day] ← bestDays[t][day-1]
+                Else
+                    // Option 2: Sell today with best previous buy
+                    maxProfit[t][day] ← currentProfit
+                    bestDays[t][day] ← (bestBuyDay, day+1)  // 1-based indexing
+                EndIf
+                
+                // Update best buy opportunity for future sells
+                prevDiff ← maxProfit[t-1][day] - prices[day]
+                If prevDiff > maxDiff then
+                    maxDiff ← prevDiff
+                    bestBuyDay ← day + 1
+                EndIf
+            EndFor
+        EndFor
+        
+        // Phase 2: Reconstruct optimal transactions for this stock
+        t ← k
+        day ← n - 1
+        While t > 0 AND day > 0 do
+            If bestDays[t][day] ≠ null then
+                (buyDay, sellDay) ← bestDays[t][day]
+                profit ← prices[sellDay-1] - prices[buyDay-1]
+                allTransactions.append((stockId+1, buyDay, sellDay, profit))
+                day ← buyDay - 2              // Jump to day before transaction
+                t ← t - 1
+            Else
+                day ← day - 1
+            EndIf
+        EndWhile
+    EndFor
+    
+    // Phase 3: Sort all transactions by profit (descending)
+    Sort allTransactions by profit in descending order
+    
+    // Phase 4: Select top-k non-overlapping transactions globally
+    selected ← empty list
+    For each transaction (stock, buy1, sell1, profit) in allTransactions do
+        overlaps ← false
+        
+        For each (_, buy2, sell2, _) in selected do
+            If NOT (sell1 ≤ buy2 OR buy1 ≥ sell2) then  // Check overlap
+                overlaps ← true
+                Break
+            EndIf
+        EndFor
+        
+        If NOT overlaps then
+            selected.append((stock, buy1, sell1, profit))
+            If |selected| = k then
+                Break
+            EndIf
+        EndIf
+    EndFor
+    
+    Return selected
+End

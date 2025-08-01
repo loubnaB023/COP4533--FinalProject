@@ -1,0 +1,71 @@
+#--- Pseudocode for StockTradingWithCooldown Algorithm ---
+
+Algorithm StockTradingWithCooldown(A, m, n, cooldown)
+
+Input:
+    A ← m × n matrix of stock prices
+    m ← number of stocks
+    n ← number of days
+    cooldown ← numer of days to wait after selling before next buy
+
+Output:
+    (max_profit, list of selected transactions as (stock, buy_day, sell_day))
+
+Begin
+
+    // --- Step 0: Edge case checks ---
+    if m ≤ 0 or n ≤ 1 or cooldown ≤ 0 or A is empty then
+        return (0, [])
+
+    if length(A) ≠ m or any row in A has length ≠ n then
+        return (0, [])
+
+    // --- Step 1: Gather all profitable transactions ---
+    transactions ← empty list
+    for stock_id ← 0 to m - 1 do
+        pricesb ← A[stock_id]
+        for buy_day ← 0 to n - 2 do
+            for sell_day ← buy_day + 1 to n - 1 do
+                profit ← prices[sell_day] - prices[buy_day]
+                if profit > 0 then
+                    buy ← buy_day + 1         // 1-based
+                    sell ← sell_day + 1       // 1-based
+                    next_day ← sell + cooldown + 1
+                    transactions.append((stock_id + 1, buy, sell, profit, next_day))
+                end if
+            end for
+        end for
+    end for
+
+    // --- Step 2: Sort transactions by buy day ---
+    sort transactions by buy ascending
+
+    // --- Step 3: Initialize DP tables ---
+    dp ← array of (0, []) of size n + 2
+    prefix_max ← array of (0, []) of size n + 2
+
+    // --- Step 4: Process each transaction ---
+    for each transaction (stock, buy, sell, profit, next_day) in transactions do
+        next_day ← min(next_day, n)
+
+        best_profit_before ← prefix_max[buy]
+        total_profit ← best_profit_before[0] + profit
+        sequence ← best_profit_before[1] + [(stock, buy, sell)]
+
+        if total_profit > dp[next_day][0] then
+            dp[next_day] ← (total_profit, sequence)
+        end if
+
+        prefix_max[next_day] ← max(prefix_max[next_day], dp[next_day]) by profit
+    end for
+
+    // --- Step 5: Carry forward prefix max values ---
+    for i ← 1 to n + 1 do
+        prefix_max[i] ← max(prefix_max[i], prefix_max[i - 1]) by profit
+    end for
+
+    // --- Step 6: Return the best result ---
+    best_result ← max(dp) by profit
+    return best_result
+
+End
